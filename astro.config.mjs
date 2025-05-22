@@ -2,4 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  site: 'https://theaayushpatel.github.io',
+  base: '/theaayushpatel.github.io',
+})
