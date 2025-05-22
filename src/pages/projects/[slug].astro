@@ -28,6 +28,7 @@ const hasYoutubeVideos = item.youtube && item.youtube.length > 0;
 const hasImages = item.images && item.images.length > 0;
 const mainImage = hasImages ? item.images[0] : null;
 const otherImages = hasImages ? item.images.slice(1) : [];
+const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.length > 0;
 ---
 
 <MainLayout title={`${item.name} | Aayush Patel's Projects`}>
@@ -86,6 +87,23 @@ const otherImages = hasImages ? item.images.slice(1) : [];
           </div>
         </div>
         <div class="project-meta">
+          {/* External Links Section */}
+          {hasExternalLinks && (  
+            <div class="external-links">
+              <div class="external-links-buttons">
+                {item.links.map(link => (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="external-link-btn"
+                  >
+                    {link.label || link.url}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           <div class="meta-item">
             <h3>Client</h3>
             <p>{item.client}</p>
@@ -137,13 +155,13 @@ const otherImages = hasImages ? item.images.slice(1) : [];
     margin-bottom: 2rem;
   }
   .back-link a {
-    color: #333;
+    color: #000000;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
   }
   .back-link a:hover {
-    color: #000;
+    color: #000000;
+    text-decoration: underline;
   }
   .main-image-wrapper {
     width: 100%;
@@ -189,28 +207,40 @@ const otherImages = hasImages ? item.images.slice(1) : [];
     gap: 1rem;
     margin-top: 1.5rem;
   }
-  .btn {
+  .external-links {
+    margin-top: 1.5rem;
+  }
+
+  .external-links-buttons {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1.2rem;
-    border-radius: 4px;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+    
+  }
+  .external-link-btn {
+    display: inline-block;
+    padding: 0.5rem 1.6rem;
+    background-color: #232323;
+    color: white;
     text-decoration: none;
+    border-radius: 10px;
     font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+    text-align: center;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    letter-spacing: 0.01em;
+    cursor: pointer;
   }
-  .btn:hover {
+  .external-link-btn:hover,
+  .external-link-btn:focus {
+    background-color: #111;
+    color: #fff;
+    text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  .github-btn {
-    background: #24292e;
-    color: white;
-  }
-  .demo-btn {
-    background: #0070f3;
-    color: white;
   }
   .project-info {
     display: flex;
@@ -365,9 +395,6 @@ const otherImages = hasImages ? item.images.slice(1) : [];
       margin-top: 0.3rem;
       margin-right: 0.3rem;
     }
-    .btn {
-      width: 100%;
-      justify-content: center;
-    }
+
   }
 </style>

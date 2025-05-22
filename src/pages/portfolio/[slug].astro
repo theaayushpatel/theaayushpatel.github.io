@@ -43,6 +43,8 @@ const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.l
         <div class="category">{item.category}</div>
       </div>
 
+     
+
       {/* YouTube Videos Section (if available) */}
       {hasYoutubeVideos && (
         <div class="videos-section">
@@ -69,8 +71,11 @@ const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.l
               <p>{paragraph}</p>
             ))}
           </div>
-          {/* External Links Section */}
-          {hasExternalLinks && (
+          
+        </div>
+        <div class="project-meta">
+           {/* External Links Section */}
+          {hasExternalLinks && (  
             <div class="external-links">
               <div class="external-links-buttons">
                 {item.links.map(link => (
@@ -86,8 +91,6 @@ const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.l
               </div>
             </div>
           )}
-        </div>
-        <div class="project-meta">
           <div class="meta-item">
             <h3>Client</h3>
             <p>{item.client}</p>
@@ -142,14 +145,15 @@ const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.l
   }
 
   .back-link a {
-    color: #333;
+    color: #000000;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
   }
 
   .back-link a:hover {
-    color: #000;
+    color: #000000;
+    text-decoration: underline;
   }
 
   .main-image-wrapper {
@@ -220,21 +224,23 @@ const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.l
   .external-links {
     margin-top: 1.5rem;
   }
+
   .external-links-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 1.2rem;
     margin-top: 0.5rem;
+    
   }
   .external-link-btn {
     display: inline-block;
-    padding: 0.8rem 2.2rem;
+    padding: 0.5rem 1.6rem;
     background-color: #232323;
     color: white;
     text-decoration: none;
     border-radius: 10px;
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
     text-align: center;
     border: none;

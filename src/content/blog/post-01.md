@@ -5,6 +5,8 @@ category: "Programming"
 tags: ["physics", "data-structures", "books"]
 description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur nunc vel eros tincidunt, id fringilla justo tinci..."
 readingTime: "1 min"
+image:
+  - /assets/portfolio/bicycle.jpg
 ---
 
 Modern web `development` frameworks have transformed how we build applications. Let's look at the evolution of these tools and where they're headed next.
@@ -13,7 +15,7 @@ The philosophy of programming languages offers insights into how we think about 
 
 The intersection of mathematics and computer science produces some of the most elegant solutions to complex problems. This post explores that relationship.
 
-![alt text](/assets/profile.png)
+![alt text](/assets/portfolio/bicycle.jpg)
 
 
 ```python
