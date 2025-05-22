@@ -1,0 +1,133 @@
+---
+// filepath: /src/pages/index.astro
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout>
+
+      <Header />
+  <section class="hero">
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script>
+        import Typed from 'typed.js';
+
+  var typed = new Typed("#typed", {
+      strings: ["Hacker.", "Developer.", "Designer.", "Philosopher.", "Student."], // Strings to display
+      typeSpeed: 150,   // Speed of typing
+      backSpeed: 100,    // Speed of deleting
+      loop: true        // Infinite loop
+    });
+    </script>
+
+    <main class="main-wrapper">
+  <div class="main-content">
+    <div class="text-section">
+      <h1><span class="name-bold">Aayush Patel.<span class="cursor">_</span></span></h1>
+      <p class="tagline"><em>I am a <span id="typed"></span></em></p>
+      <div class="social-icons">
+          <a href="https://github.com/theaayushpatel" target="_blank"><img src="/assets/icons/github.png" alt="GitHub"></a>
+          <a href="https://linkedin.com/in/patelaayushm" target="_blank"><img src="/assets/icons/linkedin.png" alt="LinkedIn"></a>
+          <a href="https://x.com/imaayushpatel" target="_blank"><img src="/assets/icons/x.png" alt="X"></a>
+      </div>
+    </div>
+    <div class="image-section">
+      <img src="/assets/profile.jpg" alt="Aayush Patel">
+    </div>
+  </div>
+</main>
+  </section>
+  <Footer />
+  <style>
+    
+    /* Full viewport centering */
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 310px);
+  padding: 2rem;
+}
+
+/* Main content flex layout */
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* Left: Text section */
+.text-section {
+  flex: 1;
+  min-width: 280px;
+}
+
+.text-section h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  font-style: italic;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.name-bold {
+  font-size: 5rem;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.tagline {
+  font-size: 2rem;
+  font-style: italic;
+  margin: 0.5rem 1;
+}
+
+.social-icons {
+  display: flex;
+  gap: 2rem;
+}
+
+.social-icons img {
+  width: 28px;
+  height: 28px;
+}
+
+/* Right: Profile image */
+.image-section {
+  flex-shrink: 0;
+}
+
+.image-section img {
+  width: 400px;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  filter: grayscale(100%);
+  transition: filter 0.5s, box-shadow 0.4s, transform 0.4s;
+}
+
+.image-section img:hover {
+  filter: grayscale(0%);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  transform: translateY(-8px) scale(1.03);
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+  </style>
+  
+</MainLayout>
+

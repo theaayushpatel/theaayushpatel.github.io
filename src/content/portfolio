@@ -1,0 +1,138 @@
+export const portfolioItems = [
+  {
+    id: 1,
+    slug: "color-study",
+    name: "Color Study",
+    category: "Drawing",
+    shortDescription: "Exploring color theory through minimal compositions",
+    description: "This series explores the relationship between colors and shapes in a minimalist context. Each piece is designed to showcase how different colors interact with each other and create visual harmony.\n\nThe use of simple geometric shapes allows the focus to remain on the color relationships, making this an excellent study in color theory and composition.",
+    images: [
+      "/assets/portfolio/color-study.jpg", 
+      "/assets/portfolio/color-study-2.jpg",
+      "/assets/portfolio/portrait.jpg",
+      "/assets/portfolio/portrait-2.jpg",
+      "/assets/portfolio/bicycle.jpg",
+      "/assets/portfolio/urban-2.jpg",
+      "/assets/portfolio/neon-sign.jpg",
+      "/assets/portfolio/neon-2.jpg"
+    ],
+    youtube: [
+      "R0wt7mxeTnk"
+    ],
+    client: "Self-initiated",
+    completionDate: "January 2023",
+    tools: ["Procreate", "Adobe Illustrator"],
+    links: [
+    { url: "https://github.com/theaayushpatel/project", label: "GitHub Repo" },
+    { url: "https://project-demo.com", label: "Live Demo" }
+  ]
+  },
+  {
+    id: 2,
+    slug: "portrait-photography",
+    name: "Portrait Photography",
+    category: "Photography",
+    shortDescription: "Fashion-forward portrait series exploring identity and light",
+    description: "A collection of portrait photographs that play with lighting, composition, and reflective surfaces. The series aims to capture personality and mood through carefully constructed scenes and styling.\n\nEach portrait incorporates elements of fashion photography while maintaining an authentic connection with the subject's personality.",
+    images: [
+      "/assets/portfolio/portrait.jpg",
+      "/assets/portfolio/portrait-2.jpg"
+    ],
+    client: "Fashion Editorial",
+    completionDate: "March 2023",
+    tools: ["Sony A7III", "Lightroom", "Photoshop"]
+  },
+  {
+    id: 3,
+    slug: "urban-exploration",
+    name: "Urban Exploration",
+    category: "Photography",
+    shortDescription: "Black and white urban photography highlighting architectural beauty",
+    description: "This black and white photography series documents urban architecture and the relationship between built structures and negative space. The high contrast approach emphasizes form, texture, and composition.\n\nThe collection captures overlooked moments of beauty in everyday urban environments, transforming mundane scenes into compelling visual narratives.",
+    images: [
+      "/assets/portfolio/bicycle.jpg",
+      "/assets/portfolio/urban-2.jpg"
+    ],
+    client: "City Arts Magazine",
+    completionDate: "November 2022",
+    tools: ["Fujifilm X-T4", "Silver Efex Pro"]
+  },
+  {
+    id: 4,
+    slug: "neon-thoughts",
+    name: "Neon Thoughts",
+    category: "Graphic Designing",
+    shortDescription: "Typographic neon designs exploring contrasting perspectives",
+    description: "A series of typographic designs that play with perspective and meaning. This project explores how the same text can convey different messages depending on how it's presented and viewed.\n\nThe neon aesthetic adds a layer of contemporary visual interest while creating a strong contrast between light and dark elements.",
+    images: [
+      "/assets/portfolio/neon-sign.jpg",
+      "/assets/portfolio/neon-2.jpg"
+    ],
+    youtube: [
+      "R0wt7mxeTnk"
+    ],
+    client: "Design Exhibition",
+    completionDate: "September 2023",
+    tools: ["Photoshop", "After Effects"]
+  },
+  {
+    id: 5,
+    slug: "ui-wireframes",
+    name: "UI Wireframes",
+    category: "UI/UX",
+    shortDescription: "Low-fidelity wireframes for mobile application design",
+    description: "A collection of wireframes and sketches created during the ideation phase of a mobile application design process. These represent the early exploration of user flows, interface layouts, and interaction patterns.\n\nThe wireframes demonstrate a thoughtful approach to solving user experience challenges while maintaining a clean, intuitive interface design.",
+    images: [
+      "/assets/portfolio/wireframes.jpg",
+      "/assets/portfolio/wireframes-2.jpg"
+    ],
+    client: "Health Tech Startup",
+    completionDate: "April 2023",
+    tools: ["Figma", "Sketch", "InVision"]
+  },
+  {
+    id: 6,
+    slug: "abstract-art",
+    name: "Abstract Art",
+    category: "Graphic Designing",
+    shortDescription: "Fluid art exploration with vibrant colors and organic forms",
+    description: "This abstract art series explores the interaction of vibrant colors and organic forms through fluid techniques. Each piece captures the unpredictable movement and blending of pigments.\n\nThe collection demonstrates how controlled chaos can create striking visual compositions with depth and energy. The works feature specially mixed acrylic paints on various surfaces.",
+    images: [
+      "/assets/portfolio/abstract.jpg",
+      "/assets/portfolio/abstract-2.jpg"
+    ],
+    client: "Art Gallery Exhibition",
+    completionDate: "February 2023",
+    tools: ["Acrylic Paint", "Digital Processing"]
+  },
+  {
+    id: 7,
+    slug: "motion-graphics",
+    name: "Motion Graphics",
+    category: "Filmmaking",
+    shortDescription: "Dynamic motion graphics for broadcast and digital media",
+    description: "A collection of motion graphics projects created for various broadcast and digital media applications. These animations combine typography, shape, and color to communicate messages with impact and clarity.\n\nEach piece was designed with specific brand guidelines in mind while pushing creative boundaries within those constraints.",
+    images: [
+      "/assets/portfolio/motion.jpg", 
+      "/assets/portfolio/motion-2.jpg"
+    ],
+    client: "Multiple Clients",
+    completionDate: "2022-2023",
+    tools: ["After Effects", "Cinema 4D", "Premiere Pro"]
+  },
+  {
+    id: 8,
+    slug: "photo-editing",
+    name: "Photo Editing",
+    category: "Editing",
+    shortDescription: "Professional photo retouching and color grading",
+    description: "This collection showcases the before-and-after results of professional photo editing work. The projects include portrait retouching, color grading, and composite imagery for various commercial applications.\n\nThe work demonstrates technical proficiency while maintaining a natural, authentic aesthetic that enhances rather than distorts the original images.",
+    images: [
+      "/assets/portfolio/editing.jpg",
+      "/assets/portfolio/editing-2.jpg" 
+    ],
+    client: "Commercial Clients",
+    completionDate: "Ongoing",
+    tools: ["Photoshop", "Lightroom", "Capture One"]
+  }
+];

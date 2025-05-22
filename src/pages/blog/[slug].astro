@@ -1,0 +1,473 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+// Generate static paths for all markdown posts
+export async function getStaticPaths() {
+  const postsImports = import.meta.glob('../../content/blog/*.md', { eager: true });
+  
+  return Object.entries(postsImports).map(([filepath, post]) => {
+    const slug = filepath.split('/').pop()?.replace(/\.md$/, '');
+    return {
+      params: { slug },
+      props: { post: {
+        ...post,
+        slug,
+        Content: post.Content
+      }},
+    };
+  });
+}
+
+// Get the post from props
+const { post } = Astro.props;
+const { Content } = post;
+
+// Get previous and next posts for navigation
+const postsImports = import.meta.glob('./posts/*.md', { eager: true });
+const allPosts = Object.entries(postsImports).map(([filepath, post]) => {
+  const slug = filepath.split('/').pop()?.replace(/\.md$/, '');
+  return {
+    ...post,
+    slug,
+    url: `/blog/${slug}`,
+    frontmatter: post.frontmatter
+  };
+});
+
+// Sort posts by date (newest first)
+const sortedPosts = allPosts.sort((a, b) => 
+  new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+);
+
+const currentIndex = sortedPosts.findIndex(p => p.slug === post.slug);
+const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+---
+
+<MainLayout>
+  <Header />
+  <section class="hero">
+    <article class="blog-post">
+      <header class="blog-post-header">
+        <h1 class="blog-post-title">{post.frontmatter.title}</h1>
+        
+        <div class="blog-post-meta">
+          {post.frontmatter.category && (
+            <span class="blog-category">{post.frontmatter.category}</span>
+          )}
+          <span class="blog-date">{post.frontmatter.date}</span>
+          {post.frontmatter.readingTime && (
+            <span class="blog-time">{post.frontmatter.readingTime}</span>
+          )}
+        </div>
+        
+        {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+          <div class="blog-post-tags">
+            {post.frontmatter.tags.map((tag) => (
+              <span class="blog-post-tag">{tag}</span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="blog-post-content">
+        <Content />
+      </div>
+
+      <div class="blog-post-navigation">
+        {prevPost && (
+          <a href={prevPost.url} class="prev-post">
+            <span class="nav-label">Previous Post</span>
+            <span class="nav-title">{prevPost.frontmatter.title}</span>
+          </a>
+        )}
+
+        {nextPost && (
+          <a href={nextPost.url} class="next-post">
+            <span class="nav-label">Next Post</span>
+            <span class="nav-title">{nextPost.frontmatter.title}</span>
+          </a>
+        )}
+      </div>
+    </article>
+  </section>
+  <Footer />
+  
+  <script>
+    // Handle code blocks with copy button functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get all code blocks
+      const codeBlocks = document.querySelectorAll('pre code');
+      
+      // Process each code block
+      codeBlocks.forEach((codeBlock) => {
+        // Get the parent pre element
+        const preElement = codeBlock.parentElement;
+        
+        // Create wrapper for code block and controls
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        
+        // Create the header with copy button
+        const header = document.createElement('div');
+        header.className = 'code-block-header';
+        
+        // Create copy button
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+        copyButton.setAttribute('aria-label', 'Copy code');
+        copyButton.title = 'Copy code';
+        
+        // Copy functionality
+        copyButton.addEventListener('click', () => {
+          const codeText = codeBlock.textContent;
+          navigator.clipboard.writeText(codeText).then(() => {
+            copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+            copyButton.classList.add('copied');
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+              copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+              copyButton.classList.remove('copied');
+            }, 2000);
+          }).catch(err => {
+            console.error('Could not copy text: ', err);
+          });
+        });
+        
+        // Assemble the header - only with copy button
+        header.appendChild(copyButton);
+        
+        // Apply the custom theme colors
+        preElement.style.background = '#2e2e3e';
+        preElement.style.color = '#f0e8d8';
+        
+        // Apply specific token colors (will be enhanced by the CSS)
+        const applyCustomColors = () => {
+          // Apply colors to different token types
+          preElement.querySelectorAll('.token.comment').forEach(el => { el.style.color = '#a8a8b8'; });
+          preElement.querySelectorAll('.token.keyword').forEach(el => { el.style.color = '#d4a8ff'; });
+          preElement.querySelectorAll('.token.function').forEach(el => { el.style.color = '#7fd4d4'; });
+          preElement.querySelectorAll('.token.string').forEach(el => { el.style.color = '#7fd4a8'; });
+          preElement.querySelectorAll('.token.number').forEach(el => { el.style.color = '#c8e8a8'; });
+          preElement.querySelectorAll('.token.operator').forEach(el => { el.style.color = '#d4a8ff'; });
+          preElement.querySelectorAll('.token.punctuation').forEach(el => { el.style.color = '#a8b4ff'; });
+          preElement.querySelectorAll('.token.property').forEach(el => { el.style.color = '#7fd4a8'; });
+          preElement.querySelectorAll('.token.tag').forEach(el => { el.style.color = '#7fd4ff'; });
+        };
+        
+        // Apply colors now and after a short delay (in case syntax highlighting is applied asynchronously)
+        applyCustomColors();
+        setTimeout(applyCustomColors, 100);
+        
+        // Insert the new wrapper and move elements
+        preElement.parentNode.insertBefore(wrapper, preElement);
+        wrapper.appendChild(header);
+        wrapper.appendChild(preElement);
+      });
+    });
+  </script>
+</MainLayout>
+
+<style>
+  :root {
+    --code-bg: #2e2e3e;
+    --code-text: #f0e8d8;
+    --code-comment: #a8a8b8;
+    --code-keyword: #d4a8ff;
+    --code-function: #7fd4d4;
+    --code-string: #7fd4a8;
+    --code-number: #c8e8a8;
+    --code-important: #7fd4ff;
+    --code-operator: #d4a8ff;
+    --code-property: #7fd4a8;
+    --code-punctuation: #a8b4ff;
+    --code-tag: #7fd4ff;
+    --code-value: #c8e8a8;
+  }
+  
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0 1rem;
+  }
+  
+  .blog-post {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .blog-post-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .blog-post-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #000000;
+    font-weight: bold;
+  }
+  
+  .blog-post-meta {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .blog-category {
+    background: #232323;
+    color: #fff;
+    border-radius: 6px;
+    padding: 0.1rem 0.7rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  
+  .blog-date, .blog-time {
+    color: #000000;
+  }
+  
+  .blog-post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .blog-post-tag {
+    background: #f0f0f0;
+    border: 1px solid #232323;
+    color: #000000;
+    border-radius: 6px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.9rem;
+  }
+  
+  .blog-post-content {
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    color: #222;
+  }
+  
+  .blog-post-content :global(h1),
+  .blog-post-content :global(h2),
+  .blog-post-content :global(h3),
+  .blog-post-content :global(h4) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #000;
+    scroll-margin-top: 80px;
+  }
+  
+  .blog-post-content :global(h1) { font-size: 2rem; }
+  .blog-post-content :global(h2) { font-size: 1.8rem; }
+  .blog-post-content :global(h3) { font-size: 1.5rem; }
+  .blog-post-content :global(h4) { font-size: 1.3rem; }
+  
+  .blog-post-content :global(p) {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .blog-post-content :global(ul),
+  .blog-post-content :global(ol) {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  
+  .blog-post-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Code block styling with copy button */
+  .blog-post-content :global(.code-block-wrapper) {
+    position: relative;
+    margin: 1.5rem 0;
+  }
+  
+  .blog-post-content :global(.code-block-header) {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: #222233;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border: 1px solid #1c1e24;
+    border-bottom: none;
+  }
+  
+  .blog-post-content :global(.copy-button) {
+    background: transparent;
+    border: none;
+    color: #d0d0d0;
+    cursor: pointer;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .blog-post-content :global(.copy-button:hover) {
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  .blog-post-content :global(.copy-button.copied) {
+    color: #7fd4a8;
+  }
+  
+  .blog-post-content :global(pre) {
+    background: var(--code-bg, #2e2e3e);
+    color: var(--code-text, #f0e8d8);
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 0; /* Reset margin as it's handled by wrapper */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid #1c1e24;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  }
+  
+  .blog-post-content :global(.code-block-wrapper pre) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  .blog-post-content :global(code) {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9em;
+  }
+  
+  .blog-post-content :global(:not(pre) > code) {
+    background: #f0f0f0;
+    color: #e0245e;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  /* Syntax highlighting colors */
+  .blog-post-content :global(.token.comment) { color: var(--code-comment); }
+  .blog-post-content :global(.token.keyword) { color: var(--code-keyword); }
+  .blog-post-content :global(.token.function) { color: var(--code-function); }
+  .blog-post-content :global(.token.string) { color: var(--code-string); }
+  .blog-post-content :global(.token.number) { color: var(--code-number); }
+  .blog-post-content :global(.token.operator) { color: var(--code-operator); }
+  .blog-post-content :global(.token.punctuation) { color: var(--code-punctuation); }
+  .blog-post-content :global(.token.property) { color: var(--code-property); }
+  .blog-post-content :global(.token.tag) { color: var(--code-tag); }
+  
+  .blog-post-content :global(blockquote) {
+    border-left: 4px solid #000000;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    background: #f9f9f9;
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .blog-post-content :global(img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .blog-post-content :global(hr) {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 2rem 0;
+  }
+  
+  .blog-post-content :global(a) {
+    color: #000000;
+    text-decoration: underline;
+    text-decoration-thickness: 0.05em;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color 0.2s;
+  }
+  
+  .blog-post-content :global(a:hover) {
+    text-decoration-color: #000000;
+  }
+  
+  .blog-post-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 3rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .prev-post, .next-post {
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: #000;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.2s, border 0.2s;
+  }
+  
+  .prev-post:hover, .next-post:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    border: 1.5px solid #000000;
+  }
+  
+  .prev-post {
+    text-align: left;
+  }
+  
+  .next-post {
+    text-align: right;
+  }
+  
+  .nav-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+  }
+  
+  .nav-title {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .blog-post-title {
+      font-size: 2rem;
+    }
+    
+    .blog-post-navigation {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .prev-post, .next-post {
+      text-align: center;
+    }
+  }
+</style>

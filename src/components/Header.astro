@@ -1,0 +1,85 @@
+---
+// filepath: /src/components/Header.astro
+---
+
+<div class ="nav-container">
+<a href="/">
+  <img src="/assets/aayushpatel.png" alt="Aayush Patel Logo" class="logo" />
+</a>
+ <nav class="navbar">
+  
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/portfolio">Portfolio</a></li>
+          <li><a href="/shop">Shop</a></li>
+        </ul>
+        <div class="social-icons">
+          <a href="https://github.com/theaayushpatel" target="_blank"><img src="/assets/icons/github.png" alt="GitHub"></a>
+          <a href="https://linkedin.com/in/patelaayushm" target="_blank"><img src="/assets/icons/linkedin.png" alt="LinkedIn"></a>
+          <a href="https://x.com/imaayushpatel" target="_blank"><img src="/assets/icons/x.png" alt="X"></a>
+        </div>
+      </nav>
+</div>
+<style>
+  .logo {
+    height:60px;
+    object-fit: contain;
+  }
+  .logo:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+  }
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.nav-container a {
+  text-decoration: none;
+  margin-left: 2%;
+}
+  .navbar {
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  align-items: center;
+  background: black;
+  color: white;
+  border-radius: 9999px;
+  margin-right: 2%;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1.5rem;
+  margin-left: 1.5rem;
+  margin-right: 2rem;
+}
+
+.social-icons img {
+  width: 25px;
+  height: 25px;
+  filter: invert(100%);
+}
+  </style>

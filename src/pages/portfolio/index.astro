@@ -1,0 +1,594 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { portfolioItems } from "../../content/portfolio";
+
+// Get all unique categories
+const allCategories = Array.from(
+  new Set(
+    portfolioItems.map(item => item.category)
+  )
+).sort();
+
+// Default to showing all items
+const categoryFilters = ["All", ...allCategories];
+---
+
+<MainLayout title="Portfolio | Aayush Patel">
+  <Header />
+  
+  <main>
+    <section class="portfolio-section">
+      <h1 class="portfolio-title">Portfolio.<span class="cursor">_</span></h1>
+      
+      <!-- Category Filter Buttons -->
+      <div class="filter-container">
+        {categoryFilters.map(category => (
+          <button class={`filter-btn ${category === 'All' ? 'active' : ''}`} data-category={category}>
+            {category}
+          </button>
+        ))}
+      </div>
+      
+      <!-- Portfolio Mosaic -->
+      <div class="portfolio-container">
+        <div class="portfolio-mosaic">
+          {portfolioItems.map(item => (
+            <a href={`/portfolio/${item.slug}`} class="portfolio-item" data-categories={JSON.stringify([item.category])}>
+              {/* Category Tag */}
+              <span class="category-tag">{item.category}</span>
+              <img src={item.images[0]} alt={item.name} loading="lazy" class="main-image" />
+              <img src={item.images.length > 1 ? item.images[1] : item.images[0]} alt={item.name} loading="lazy" class="hover-image" />
+              <div class="portfolio-hover">
+                <h3>{item.name}</h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const portfolioItems = document.querySelectorAll('.portfolio-item');
+      const mainImages = document.querySelectorAll('.main-image');
+      
+      // Counter to track how many images have been processed
+      let loadedImages = 0;
+      
+      // Wait for all portfolio images to load
+      mainImages.forEach(img => {
+        if (img.complete) {
+          imageLoaded();
+        } else {
+          img.addEventListener('load', imageLoaded);
+        }
+        
+        // Fallback if image fails to load
+        img.addEventListener('error', imageLoaded);
+      });
+      
+      function imageLoaded() {
+        loadedImages++;
+        
+        // When all images are loaded, apply size classes
+        if (loadedImages === mainImages.length) {
+          assignTileSizes();
+        }
+      }
+      
+      // New improved algorithm for assigning tile sizes
+      function assignTileSizes() {
+        // First pass: categorize images by aspect ratio
+        portfolioItems.forEach((item, index) => {
+          const img = item.querySelector('.main-image');
+          const aspectRatio = img.naturalWidth / img.naturalHeight;
+          
+          // Remove any existing size classes
+          item.classList.remove('small', 'medium', 'large', 'tall', 'wide');
+          
+          // Store aspect ratio as data attribute for future use
+          item.setAttribute('data-ratio', aspectRatio.toFixed(2));
+          
+          // Determine initial size class based on aspect ratio
+          if (aspectRatio > 1.7) {
+            item.classList.add('wide');
+          } else if (aspectRatio > 1.3) {
+            item.classList.add('medium');
+          } else if (aspectRatio < 0.7) {
+            item.classList.add('tall');
+          } else if (aspectRatio < 0.9) {
+            item.classList.add(index % 2 === 0 ? 'tall' : 'medium');
+          } else {
+            if (index % 5 === 0) {
+              item.classList.add('large');
+            } else {
+              item.classList.add('small');
+            }
+          }
+        });
+        
+        // Second pass: arrange items in rows that perfectly fit the grid
+        arrangeItemsInRows();
+      }
+      
+      function arrangeItemsInRows() {
+        // Get all visible items
+        const visibleItems = Array.from(portfolioItems).filter(item => 
+          item.style.display !== 'none'
+        );
+        
+        const totalColumns = 12;
+        const rows = [];
+        let currentRow = [];
+        let currentRowWidth = 0;
+        
+        // Step 1: Sort items into rows without exceeding totalColumns
+        visibleItems.forEach((item, index) => {
+          const getSpan = (item) => {
+            if (item.classList.contains('medium')) return 4;
+            if (item.classList.contains('large')) return 6;
+            if (item.classList.contains('wide')) return 6;
+            if (item.classList.contains('tall')) return 3;
+            return 3; // small
+          };
+          
+          const span = getSpan(item);
+          
+          // If adding item exceeds row width, start a new row
+          if (currentRowWidth + span > totalColumns) {
+            rows.push(currentRow);
+            currentRow = [item];
+            currentRowWidth = span;
+          } else {
+            currentRow.push(item);
+            currentRowWidth += span;
+          }
+        });
+        
+        // Add the last row
+        if (currentRow.length > 0) {
+          rows.push(currentRow);
+        }
+        
+        // Step 2: Ensure each row fills exactly totalColumns
+        rows.forEach((row, rowIndex) => {
+          let rowWidth = row.reduce((sum, item) => {
+            if (item.classList.contains('medium')) return sum + 4;
+            if (item.classList.contains('large')) return sum + 6;
+            if (item.classList.contains('wide')) return sum + 6;
+            if (item.classList.contains('tall')) return sum + 3;
+            return sum + 3; // small
+          }, 0);
+          
+          const deficit = totalColumns - rowWidth;
+          
+          // If the row doesn't fill all columns, adjust it
+          if (deficit > 0) {
+            // For last row, force it to fill exactly totalColumns
+            if (rowIndex === rows.length - 1 && row.length > 0) {
+              forceRowFill(row, deficit);
+            } 
+            // For all other rows, adjust individual items
+            else if (row.length > 0) {
+              adjustRowToFill(row, deficit);
+            }
+          }
+        });
+        
+        // Force the viewport to refresh the layout
+        const mosaic = document.querySelector('.portfolio-mosaic');
+        mosaic.style.opacity = '0.99';
+        setTimeout(() => {
+          mosaic.style.opacity = '1';
+        }, 50);
+      }
+      
+      // Adjust row items to fill width exactly
+      function adjustRowToFill(row, deficit) {
+        if (row.length === 0) return;
+        
+        // If deficit is exact class size, adjust the last item
+        if ([3, 4, 6].includes(deficit)) {
+          const lastItem = row[row.length - 1];
+          lastItem.className = 'portfolio-item';
+          
+          if (deficit === 3) lastItem.classList.add('small');
+          else if (deficit === 4) lastItem.classList.add('medium');
+          else if (deficit === 6) lastItem.classList.add('large');
+          return;
+        }
+        
+        // For other deficits, redistribute all items in the row
+        const idealWidth = Math.floor(12 / row.length);
+        const remainder = 12 % row.length;
+        
+        row.forEach((item, i) => {
+          item.className = 'portfolio-item';
+          
+          // Assign calculated size based on position
+          if (idealWidth <= 3) {
+            item.classList.add('small');
+          } else if (idealWidth <= 4) {
+            item.classList.add('medium');
+          } else {
+            item.classList.add('large');
+          }
+          
+          // Distribute remainder to the first few items if needed
+          if (i < remainder && remainder <= 3) {
+            item.classList.remove('small', 'medium', 'large', 'tall', 'wide');
+            if (idealWidth + 1 <= 3) item.classList.add('small');
+            else if (idealWidth + 1 <= 4) item.classList.add('medium');
+            else item.classList.add('large');
+          }
+        });
+      }
+      
+      // Force the last row to fill the grid width exactly
+      function forceRowFill(row, deficit) {
+        if (row.length === 0) return;
+        
+        // If only one item, make it full width
+        if (row.length === 1) {
+          const item = row[0];
+          item.className = 'portfolio-item';
+          item.classList.add('large');
+          return;
+        }
+        
+        // Otherwise distribute sizes evenly
+        const totalSize = 12;
+        const baseSize = Math.floor(totalSize / row.length);
+        const remainder = totalSize % row.length;
+        
+        row.forEach((item, index) => {
+          // Clear all size classes
+          item.className = 'portfolio-item';
+          
+          // Calculate this item's size
+          let itemSize = baseSize;
+          if (index < remainder) {
+            itemSize += 1;
+          }
+          
+          // Apply appropriate class
+          if (itemSize <= 3) {
+            item.classList.add('small');
+          } else if (itemSize <= 4) {
+            item.classList.add('medium');
+          } else {
+            item.classList.add('large');
+          }
+          
+          // Adjust height based on aspect ratio
+          const ratio = parseFloat(item.getAttribute('data-ratio') || '1');
+          if (ratio < 0.8) {
+            // Tall images keep their height
+            item.classList.add('tall-height');
+          } else if (ratio > 1.5) {
+            // Wide images stay shorter
+            item.classList.add('short-height');
+          }
+        });
+      }
+      
+      // Set up filter functionality
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Update active button
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          const category = button.getAttribute('data-category');
+          
+          // Filter items
+          portfolioItems.forEach(item => {
+            const itemCategories = JSON.parse(item.getAttribute('data-categories') || '[]');
+            
+            if (category === 'All' || itemCategories.includes(category)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+          
+          // Re-arrange items after filtering
+          setTimeout(() => {
+            assignTileSizes();
+          }, 100);
+        });
+      });
+      
+      // Handle window resize
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          assignTileSizes();
+        }, 250);
+      });
+    });
+  </script>
+</MainLayout>
+
+<style>
+  main {
+    padding: 2rem 1rem;
+  }
+  
+  .portfolio-section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .portfolio-container {
+    overflow: hidden; /* Ensures everything stays inside the container */
+  }
+  
+  .portfolio-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-style: italic;
+    position: relative;
+  }
+  
+  .cursor {
+    font-weight: 300;
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  /* Filter Buttons */
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .filter-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-btn:hover {
+    color: #555;
+  }
+  
+  .filter-btn.active {
+    background-color: #000;
+    color: #fff;
+    font-weight: 500;
+  }
+  
+  /* Portfolio Mosaic Layout */
+  .portfolio-mosaic {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 150px;
+    grid-auto-flow: dense;
+    gap: 16px;
+    width: 100%;
+  }
+  
+  .portfolio-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+  }
+
+  /* Category Tag */
+  .category-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #fff;
+    color: #222;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.3em 1em;
+    border-radius: 2em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.92;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 480px) {
+    .category-tag {
+      font-size: 0.75rem;
+      top: 8px;
+      right: 8px;
+      padding: 0.2em 0.7em;
+    }
+  }
+  
+  /* Different tile sizes based on image content */
+  .portfolio-item.small {
+    grid-column: span 3;
+    grid-row: span 1;
+  }
+  
+  .portfolio-item.medium {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+  
+  .portfolio-item.large {
+    grid-column: span 6;
+    grid-row: span 2;
+  }
+  
+  .portfolio-item.tall {
+    grid-column: span 3;
+    grid-row: span 2;
+  }
+  
+  .portfolio-item.wide {
+    grid-column: span 6;
+    grid-row: span 1;
+  }
+  
+  /* Height adjustments based on aspect ratio */
+  .portfolio-item.tall-height {
+    grid-row: span 2;
+  }
+  
+  .portfolio-item.short-height {
+    grid-row: span 1;
+  }
+  
+  /* Images */
+  .portfolio-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  .portfolio-item .main-image {
+    opacity: 1;
+  }
+  
+  .portfolio-item .hover-image {
+    opacity: 0;
+  }
+  
+  .portfolio-item:hover .main-image {
+    opacity: 0;
+  }
+  
+  .portfolio-item:hover .hover-image {
+    opacity: 1;
+  }
+  
+  .portfolio-hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    padding: 1rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 2;
+  }
+  
+  .portfolio-item:hover .portfolio-hover {
+    transform: translateY(0);
+  }
+  
+  .portfolio-hover h3 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.2rem;
+  }
+  
+  .portfolio-hover p {
+    margin: 0;
+    opacity: 0.8;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .portfolio-mosaic {
+      grid-template-columns: repeat(8, 1fr);
+    }
+    
+    .portfolio-item.small {
+      grid-column: span 4;
+    }
+    
+    .portfolio-item.medium {
+      grid-column: span 4;
+    }
+    
+    .portfolio-item.large {
+      grid-column: span 8;
+    }
+    
+    .portfolio-item.tall {
+      grid-column: span 4;
+      grid-row: span 2;
+    }
+    
+    .portfolio-item.wide {
+      grid-column: span 8;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .portfolio-mosaic {
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: 130px;
+    }
+    
+    .portfolio-item.small {
+      grid-column: span 3;
+    }
+    
+    .portfolio-item.medium {
+      grid-column: span 3;
+      grid-row: span 2;
+    }
+    
+    .portfolio-item.large {
+      grid-column: span 6;
+      grid-row: span 2;
+    }
+    
+    .portfolio-item.tall {
+      grid-column: span 3;
+      grid-row: span 2;
+    }
+    
+    .portfolio-item.wide {
+      grid-column: span 6;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .portfolio-mosaic {
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 100px;
+    }
+    
+    .portfolio-item {
+      grid-column: span 4 !important;
+      grid-row: span 1 !important;
+    }
+    
+    .portfolio-item.tall,
+    .portfolio-item.medium,
+    .portfolio-item.large,
+    .portfolio-item.tall-height {
+      grid-row: span 2 !important;
+    }
+  }
+</style>

@@ -1,0 +1,293 @@
+---
+// filepath: /src/pages/index.astro
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+<MainLayout>
+        <Header />
+   <section class="hero">
+    <h1 class="about-title"><i>About Me.</i><span class="cursor">_</span></h1>
+    <div class="about-grid">
+      <!-- Left column -->
+      <div class="about-col about-col-left">
+        <div class="about-content">
+          <img src="/assets/profile.jpg" alt="Aayush Patel" class="about-image" />
+        </div>
+        <div class="about-content">
+          <div class="social-icons">
+          <a href="https://github.com/theaayushpatel" target="_blank"><img src="/assets/icons/github.png" alt="GitHub"></a>
+          <a href="https://linkedin.com/in/patelaayushm" target="_blank"><img src="/assets/icons/linkedin.png" alt="LinkedIn"></a>
+          <a href="https://x.com/imaayushpatel" target="_blank"><img src="/assets/icons/x.png" alt="X"></a>
+          <a href="mailto:aayushp9326@gmail.com"><img src="/assets/icons/email.png" alt="X"></a>
+          </div>
+        </div>
+      </div>
+      <!-- Right column -->
+      <div class="about-col about-col-right">
+        <div class="about-content">
+          <h1>whoami</h1>
+          <p>
+            Hello! I'm <strong>Aayush</strong>, a passionate engineer and developer with a love for creating innovative solutions that combine hardware and software. With background in electrical engineering and embedded systems, I enjoy working at the intersection of technology and creativity.
+          </p>
+          <p>
+            I believe in the power of open-source technologies and contribute to various projects. When I'm not coding or soldering components, you can find me exploring new technologies, writing technical articles, or working on personal projects.
+          </p>
+        </div>
+        <div class="about-content">
+          <h1>Skills</h1>
+           <div class="skills-categories">
+              <div class="skill-category">
+                <h2>Hardware</h2>
+                <ul class="skills-list">
+                  <li>Circuit Design</li>
+                  <li>PCB Layout</li>
+                  <li>Microcontrollers</li>
+                  <li>Sensor Integration</li>
+                  <li>Prototyping</li>
+                </ul>
+              </div>
+              
+              <div class="skill-category">
+                <h2>Software</h2>
+                <ul class="skills-list">
+                  <li>Embedded C/C++</li>
+                  <li>Python</li>
+                  <li>JavaScript</li>
+                  <li>RTOS</li>
+                  <li>Web Development</li>
+                </ul>
+              </div>
+              
+              <div class="skill-category">
+                <h2>Tools</h2>
+                <ul class="skills-list">
+                  <li>KiCAD</li>
+                  <li>Git</li>
+                  <li>Linux</li>
+                  <li>Arduino</li>
+                  <li>VS Code</li>
+                </ul>
+              </div>
+            </div>
+        </div>
+        <div class="about-content">
+          <h1>Experience</h1>
+          <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h3>Cyber Security Engineer</h3>
+                  <h4>AlpsLogic IT Solutions | Internship</h4>
+                  <p class="timeline-date">May 2025 - May 2025</p>
+                  <p>Description of your current role, responsibilities, and key achievements. Focus on projects that demonstrate your expertise and passion.</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h3>Cyber Security & Penetration Testing</h3>
+                  <h4>Hacktify Cyber Security | Internship</h4>
+                  <p class="timeline-date">February 2025 - March 2025</p>
+                  <p>Description of your current role, responsibilities, and key achievements. Focus on projects that demonstrate your expertise and passion.</p>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="about-content">
+          <h1>Education</h1>
+          <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h3>B.Tech, Computer Science and Engineering with CyberSecurity</h3>
+                  <h4>Parul University</h4>
+                  <p class="timeline-date">September 2022 - March 2026</p>
+                  <p>Your university, major, and any significant research projects or thesis work you completed.</p>
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <h3>Diploma, Blockchain Technology</h3>
+                  <h4>Parul University</h4>
+                  <p class="timeline-date">September 2024 - July 2025</p>
+                  <p>Your undergraduate institution, field of study, and notable achievements or projects during this time.</p>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="about-content">
+          <h1>Get In Touch</h1>
+          <p>Interested in collaborating on a project or just want to connect? Feel free to reach out through any of the channels below:</p>
+          <div class="social-icons">
+          <a href="https://github.com/theaayushpatel" target="_blank"><img src="/assets/icons/github.png" alt="GitHub"></a>
+          <a href="https://linkedin.com/in/patelaayushm" target="_blank"><img src="/assets/icons/linkedin.png" alt="LinkedIn"></a>
+          <a href="https://x.com/imaayushpatel" target="_blank"><img src="/assets/icons/x.png" alt="X"></a>
+          <a href="mailto:aayushp9326@gmail.com"><img src="/assets/icons/email.png" alt="X"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <Footer />
+  <style>
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .about-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2.5rem;
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 2.5rem;
+    }
+    .about-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .about-col-left {
+      position: sticky;
+      top: 2.5rem;
+      align-self: flex-start;
+    }
+    .about-content {
+      /* background: #f9f9f9; */
+      padding: 2rem;
+      border-radius: 12px;
+      /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+      color: #000000;
+    }
+    .about-content h1 {
+      font-size: 2rem;
+      margin-top: 0.2rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    .about-content p, .about-content ul {
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.7;
+    }
+    .about-content ul {
+      padding-left: 1.5rem;
+    }
+    .about-content li {
+      margin-bottom: 0.5rem;
+      list-style: disc;
+    }
+    .about-image {
+        width: 100%;
+        height: auto;
+        /* max-width: 400px;
+        max-height: 400px; */
+        object-fit: cover;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 12px;
+    }
+    .social-icons {
+  display: flex;
+  gap: 2rem;
+    justify-content: center;
+}
+
+.social-icons img {
+  width: 28px;
+  height: 28px;
+}
+  .skills-categories {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  
+  
+  .skills-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .skills-list li {
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+
+  .timeline {
+    position: relative;
+    margin-left: 1.5rem;
+  }
+  
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 2px;
+    background-color: #000000;
+  }
+  
+  .timeline-item {
+    position: relative;
+    padding-bottom: 2.5rem;
+  }
+  
+  .timeline-marker {
+    position: absolute;
+    left: -1.5rem;
+    width: 9px;
+    height:9px;
+    border-radius: 50%;
+    background-color: #000000;
+    margin-top: 5px;
+  }
+  
+  .timeline-content {
+    padding-left: 1.5rem;
+  }
+  
+  .timeline-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .timeline-date {
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+
+    .cursor {
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @media (max-width: 900px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .about-col {
+        flex-direction: column;
+        gap: 2rem;
+      }
+    }
+  </style>
+</MainLayout>

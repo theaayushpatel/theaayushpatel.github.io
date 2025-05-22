@@ -1,0 +1,399 @@
+---
+    // filepath: /mnt/volume/CODING/theaayushpatel.github.io/src/pages/blog/index.astro
+    import MainLayout from "../../layouts/MainLayout.astro";
+    import Header from "../../components/Header.astro";
+    import Footer from "../../components/Footer.astro";
+
+    // Import all markdown blog posts using import.meta.glob instead of Astro.glob
+    const postsImports = import.meta.glob('../../content/blog/*.md', { eager: true });
+    const allPosts = Object.entries(postsImports).map(([filePath, post]) => {
+        const slug = filePath.split('/').pop()?.replace(/\.md$/, '');
+        return {
+            ...(post as object),
+            url: `/blog/${slug}`,
+            frontmatter: (post as any).frontmatter
+        };
+    });
+    
+    // Sort posts by date (newest first)
+    const sortedPosts = allPosts.sort((a, b) => 
+        new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+    );
+
+    // Extract unique tags and categories from all posts
+    const tagsSet = new Set();
+    const categoriesSet = new Set();
+    sortedPosts.forEach(post => {
+        (post.frontmatter.tags || []).forEach((tag: string) => tagsSet.add(tag));
+        if (post.frontmatter.category) categoriesSet.add(post.frontmatter.category);
+    });
+    const allTags = Array.from(tagsSet).sort();
+    const allCategories = Array.from(categoriesSet).sort();
+---
+
+<MainLayout>
+    <Header />
+    <section class="hero">
+        <h1 class="blog-home-title"><i>Blog.</i><span class="cursor">_</span></h1>
+        
+        <div class="blog-gird">
+        <!-- Blog List Column -->
+        <div class="blog-col blog-col-left">
+            <div class="blog-list">
+            {sortedPosts.map(post => (
+                <article class="blog-content blog-card"
+                data-tags={post.frontmatter.tags?.join(',') ?? ''}
+                data-category={post.frontmatter.category ?? ''}>
+                <a href={post.url} style="text-decoration:none;color:inherit;">
+                    <h2 class="blog-title">{post.frontmatter.title}</h2>
+                    <div class="blog-meta">
+                    {post.frontmatter.category && (
+                        <span class="blog-category">{post.frontmatter.category}</span>
+                    )}
+                    <span class="blog-date">{post.frontmatter.date}</span>
+                    {post.frontmatter.readingTime && (
+                        <span class="blog-time">{post.frontmatter.readingTime}</span>
+                    )}
+                    </div>
+                    <p class="blog-desc">{post.frontmatter.description}</p>
+                </a>
+                </article>
+            ))}
+            </div>
+        </div>
+        
+        <!-- Rest of the file remains unchanged -->
+        <!-- Sidebar Column -->
+        <div class="blog-col blog-col-right">
+            <div class="show-all-container">
+        <button id="show-all-posts" class="show-all-btn">Show All Posts</button>
+        </div>
+            <div class="blog-content sidebar-section">
+            <h1>Categories</h1>
+            <ul class="category-list">
+                {allCategories.map(cat => (
+                <li>
+                    <button class="category-btn" data-category={cat}>{cat}</button>
+                </li>
+                ))}
+            </ul>
+            </div>
+            <div class="blog-content sidebar-section">
+            <h1>Tags</h1>
+            <div class="tag-list">
+                {allTags.map(tag => (
+                <button class="tag-btn" data-tag={tag}>{tag}</button>
+                ))}
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <Footer />
+
+    <script>
+    // Correctly attach event handlers after the DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add click handler for Show All Posts button
+        const showAllPostsBtn = document.getElementById('show-all-posts');
+        if (showAllPostsBtn) {
+        showAllPostsBtn.addEventListener('click', showAllPosts);
+        }
+        
+        // Add click handlers to tag buttons
+        document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tag = btn.getAttribute('data-tag');
+            if (tag !== null) {
+            filterByTag(tag);
+            }
+        });
+        });
+
+        // Add click handlers to category buttons
+        document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.getAttribute('data-category');
+            if (category !== null) {
+            filterByCategory(category);
+            }
+        });
+        });
+    });
+
+    // Show all posts function
+    function showAllPosts() {
+        // Reset all active buttons
+        document.querySelectorAll('.tag-btn, .category-btn').forEach(btn => 
+        btn.classList.remove('active')
+        );
+        
+        // Show all posts
+        document.querySelectorAll('.blog-card').forEach(card => {
+        const el = card as HTMLElement;
+        el.style.display = '';
+        });
+        
+        // Highlight the Show All button
+        const showAllBtn = document.getElementById('show-all-posts');
+        if (showAllBtn) {
+        showAllBtn.classList.add('active');
+        setTimeout(() => {
+            showAllBtn.classList.remove('active');
+        }, 700);
+        }
+    }
+
+    function filterByTag(tag: string) {
+        // Reset Show All button visual state
+        const showAllBtn = document.getElementById('show-all-posts');
+        if (showAllBtn) {
+        showAllBtn.classList.remove('active');
+        }
+        
+        // Update active state on buttons
+        document.querySelectorAll('.tag-btn').forEach(btn => 
+        btn.classList.toggle('active', btn.getAttribute('data-tag') === tag)
+        );
+        document.querySelectorAll('.category-btn').forEach(btn => 
+        btn.classList.remove('active')
+        );
+        
+        // Filter the posts
+        document.querySelectorAll('.blog-card').forEach(card => {
+        const el = card as HTMLElement;
+        const tags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        el.style.display = tags.includes(tag) ? '' : 'none';
+        });
+    }
+
+    function filterByCategory(cat: string) {
+        // Reset Show All button visual state
+        const showAllBtn = document.getElementById('show-all-posts');
+        if (showAllBtn) {
+        showAllBtn.classList.remove('active');
+        }
+        
+        // Update active state on buttons
+        document.querySelectorAll('.category-btn').forEach(btn => 
+        btn.classList.toggle('active', btn.getAttribute('data-category') === cat)
+        );
+        document.querySelectorAll('.tag-btn').forEach(btn => 
+        btn.classList.remove('active')
+        );
+        
+        // Filter the posts
+        document.querySelectorAll('.blog-card').forEach(card => {
+        const el = card as HTMLElement;
+        el.style.display = el.dataset.category === cat ? '' : 'none';
+        });
+    }
+    </script>
+
+    <style>
+        .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        }
+        .blog-home-title {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+        color: #000000;
+        }
+        .show-all-container {
+        width: 100%;
+        max-width: 1100px;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1.5rem;
+        }
+        .show-all-btn {
+        /* background: #f0f0f0; */
+        border: 1px solid #232323;
+        color: #000000;
+        border-radius: 6px;
+        padding: 0.5rem 1.2rem;
+        width: 100%;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        }
+        .show-all-btn:hover, .show-all-btn.active {
+        background: #000000;
+        color: #fff;
+        border-color: #000000;
+        }
+        .blog-gird {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2.5rem;
+        width: 100%;
+        max-width: 1100px;
+        }
+        .blog-col {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        }
+        .blog-col-left .blog-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        }
+        .blog-col-right {
+            gap: 0rem;
+        }
+
+        .blog-content {
+        /* background: #f9f9f9; */
+        padding: 1.5rem;
+        border-radius: 12px;
+        /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+        color: #000000;
+        }
+
+        .blog-card {
+        /* background: #f9f9f9; */
+        padding: 1.5rem;
+        border-radius: 12px;
+        /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+        color: #000000;
+        /* border: 1px solid #e0e0e0; */
+        transition: box-shadow 0.2s, border 0.2s;
+        }
+        .blog-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+        border: 1.5px solid #000000;
+        }
+        .blog-title {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.5rem;
+        color: #000000;
+        font-weight: bold;
+        }
+        .blog-meta {
+        font-size: 1rem;
+        color: #888;
+        margin-bottom: 0.7rem;
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        flex-wrap: wrap;
+        }
+        .blog-category {
+        background: #232323;
+        color: #fff;
+        border-radius: 6px;
+        padding: 0.1rem 0.7rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        }
+        .blog-date, .blog-time {
+        color: #000000;
+        }
+        .blog-desc {
+        color: #000000;
+        margin-top: 0.7rem;
+        font-size: 1.08rem;
+        }
+        .sidebar-section {
+        /* background: #f9f9f9; */
+        /* border-radius: 12px; */
+        /* box-shadow: 0 2px 8px rgba(0,0,0,0.1); */
+        padding: 1.5rem 1.2rem;
+        padding-top: 0.5rem;
+        /* border: 1px solid #e0e0e0; */
+        margin-bottom: 1.5rem;
+        }
+        .sidebar-section h1 {
+            font-size: 1.5rem;
+            margin-top: 0.2rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .category-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        }
+        .category-btn {
+        background: none;
+        border: 1px solid #232323;
+        color: #000000;
+        border-radius: 6px;
+        padding: 0.3rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border 0.2s;
+        text-align: left;
+        }
+        .category-btn.active, .category-btn:hover {
+        background: #000000;
+        color: #fff;
+        border: 1px solid #000000;
+        }
+        .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        }
+        .tag-btn {
+        background: none;
+        border: 1px solid #232323;
+        color: #000000;
+        border-radius: 6px;
+        padding: 0.3rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border 0.2s;
+        text-align: left;
+        }
+        .tag-btn.active, .tag-btn:hover {
+        background: #000000;
+        color: #fff;
+        border: 1px solid #000000;
+        }
+        .cursor {
+        display: inline-block;
+        animation: blink 1s infinite;
+        color: #000000;
+        }
+        @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+        }
+        @media (max-width: 900px) {
+        .blog-gird {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        .blog-col {
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .sidebar-section {
+            margin-bottom: 0;
+        }
+        }
+        @media (max-width: 600px) {
+        .blog-home-title {
+            font-size: 2rem;
+        }
+        .blog-card {
+            padding: 1.2rem;
+        }
+        .sidebar-section {
+            padding: 1rem 0.5rem;
+        }
+        }
+    </style>
+</MainLayout>

@@ -1,0 +1,89 @@
+---
+// filepath: /src/layouts/MainLayout.astro
+---
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Aayush Patel</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+       body {
+        font-family: JetBrains Mono, monospace;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+        color: #000000;
+      }
+
+      
+      
+    </style>
+  </head>
+
+  <body>
+    <slot />
+
+  <!-- Fullscreen dialog markup, hidden by default -->
+  <div id="fullscreen-image-dialog" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.96); align-items:center; justify-content:center; z-index:99999;">
+    <button id="fullscreen-image-close" style="position:absolute; top:32px; right:40px; background:rgba(0,0,0,0.7); color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:2rem; cursor:pointer; z-index:100001; display:flex; align-items:center; justify-content:center;" aria-label="Close">&times;</button>
+    <img id="fullscreen-image-img" src="" alt="Full Image" style="max-width:96vw; max-height:92vh; border-radius:12px; box-shadow:0 4px 32px rgba(0,0,0,0.25); background:#222;" />
+  </div>
+
+  <script>
+    // This will work for ANY image with class "fullscreenable-image" on the whole website
+    function enableFullscreenImages() {
+      document.querySelectorAll('img.fullscreenable-image').forEach(img => {
+        if (!img.dataset.fullscreenBound) {
+          img.addEventListener('click', function () {
+            const dialog = document.getElementById('fullscreen-image-dialog');
+            const dialogImg = document.getElementById('fullscreen-image-img');
+            dialogImg.src = this.src;
+            dialog.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+          });
+          img.dataset.fullscreenBound = "true";
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', enableFullscreenImages);
+    // In case images are dynamically loaded later
+    window.enableFullscreenImages = enableFullscreenImages;
+
+    // Close button
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('fullscreen-image-close').onclick = function () {
+        const dialog = document.getElementById('fullscreen-image-dialog');
+        const dialogImg = document.getElementById('fullscreen-image-img');
+        dialog.style.display = 'none';
+        dialogImg.src = '';
+        document.body.style.overflow = '';
+      };
+
+      // Click outside image closes dialog
+      document.getElementById('fullscreen-image-dialog').addEventListener('click', function (e) {
+        if (e.target === this) {
+          this.style.display = 'none';
+          document.getElementById('fullscreen-image-img').src = '';
+          document.body.style.overflow = '';
+        }
+      });
+
+      // ESC key closes dialog
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          const dialog = document.getElementById('fullscreen-image-dialog');
+          if (dialog.style.display === 'flex') {
+            dialog.style.display = 'none';
+            document.getElementById('fullscreen-image-img').src = '';
+            document.body.style.overflow = '';
+          }
+        }
+      });
+    });
+  </script>
+  </body>
+</html>

@@ -1,0 +1,380 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { portfolioItems } from "../../content/portfolio";
+
+export function getStaticPaths() {
+  return portfolioItems.map(item => ({
+    params: { slug: item.slug },
+    props: { item }
+  }));
+}
+
+const { item } = Astro.props;
+
+// Check if the project has YouTube videos
+const hasYoutubeVideos = item.youtube && item.youtube.length > 0;
+const hasImages = item.images && item.images.length > 0;
+const mainImage = hasImages ? item.images[0] : null;
+const otherImages = hasImages ? item.images.slice(1) : [];
+const hasExternalLinks = item.links && Array.isArray(item.links) && item.links.length > 0;
+---
+
+<MainLayout title={`${item.name} | Aayush Patel's Portfolio`}>
+  <Header />
+  
+  <main class="project-detail">
+    <div class="container">
+      <div class="back-link">
+        <a href="/portfolio">Back to Portfolio</a>
+      </div>
+
+      {/* Main Image on Top */}
+      {mainImage && (
+        <div class="main-image-wrapper">
+          <img src={mainImage} alt={item.name} class="main-image" loading="eager" />
+        </div>
+      )}
+
+      {/* Project Details */}
+      <div class="project-header">
+        <h1>{item.name}</h1>
+        <div class="category">{item.category}</div>
+      </div>
+
+      {/* YouTube Videos Section (if available) */}
+      {hasYoutubeVideos && (
+        <div class="videos-section">
+          <div class="videos-gallery">
+            {item.youtube.map((videoId) => (
+              <div class="youtube-container">
+                <iframe 
+                  src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                  title={`${item.name} video`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="project-info">
+        <div class="description">
+          <h2>About this project</h2>
+          <div class="description-content">
+            {item.description.split('\n\n').map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+          {/* External Links Section */}
+          {hasExternalLinks && (
+            <div class="external-links">
+              <div class="external-links-buttons">
+                {item.links.map(link => (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="external-link-btn"
+                  >
+                    {link.label || link.url}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div class="project-meta">
+          <div class="meta-item">
+            <h3>Client</h3>
+            <p>{item.client}</p>
+          </div>
+          <div class="meta-item">
+            <h3>Date</h3>
+            <p>{item.completionDate}</p>
+          </div>
+          <div class="meta-item">
+            <h3>Tools</h3>
+            <ul>
+              {item.tools.map((tool) => (
+                <li>{tool}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      
+
+      {/* Other Images Gallery at Bottom */}
+      {otherImages.length > 0 && (
+        <div class="images-section">
+          <div class="images-gallery">
+            {otherImages.map((image) => (
+              <div class="gallery-item">
+                <img src={image} alt={item.name} loading="lazy" class="fullscreenable-image"/>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </main>
+  
+  <Footer />
+</MainLayout>
+
+<style>
+  .project-detail {
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    margin-bottom: 2rem;
+  }
+
+  .back-link a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .back-link a:hover {
+    color: #000;
+  }
+
+  .main-image-wrapper {
+    width: 100%;
+    margin-bottom: 2.5rem;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    max-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+  }
+
+  .main-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    max-height: 480px;
+  }
+
+  .project-header {
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .project-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .category {
+    display: inline-block;
+    background: #000000;
+    padding: 0.3rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    position: static;
+  }
+
+  .project-info {
+    display: flex;
+    flex-direction: row;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    justify-content: space-between;
+  }
+
+  .description {
+    flex: 2;
+  }
+
+  .description h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .description-content p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .external-links {
+    margin-top: 1.5rem;
+  }
+  .external-links-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+  }
+  .external-link-btn {
+    display: inline-block;
+    padding: 0.8rem 2.2rem;
+    background-color: #232323;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+    text-align: center;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    letter-spacing: 0.01em;
+    cursor: pointer;
+  }
+  .external-link-btn:hover,
+  .external-link-btn:focus {
+    background-color: #111;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  .project-meta {
+    flex: 1;
+    display: grid;
+    gap: 1.5rem;
+    background: #f8f8f8;
+    padding: 1.5rem;
+    border-radius: 8px;
+    min-width: 200px;
+    max-width: 260px;
+    height: fit-content;
+  }
+
+  .meta-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+
+  .meta-item ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .meta-item li {
+    margin-bottom: 0.3rem;
+  }
+
+  .videos-section {
+    margin: 3rem 0 2rem 0;
+  }
+
+  .videos-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .videos-gallery {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .youtube-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .youtube-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+  }
+
+ .images-section {
+    margin-top: 3rem;
+  }
+
+  .images-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .images-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    background: #fafafa;
+  }
+
+  @media (max-width: 900px) {
+    .project-info {
+      flex-direction: column;
+      gap: 2rem;
+      align-items: stretch;
+    }
+    .project-meta {
+      max-width: 100%;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .project-header h1 {
+      font-size: 2rem;
+    }
+    .main-image-wrapper {
+      max-height: 240px;
+    }
+    .main-image {
+      max-height: 240px;
+    }
+    .images-gallery {
+      grid-template-columns: 1fr;
+    }
+    .videos-gallery {
+      grid-template-columns: 1fr;
+    }
+    .category {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.7rem;
+      margin-top: 0.3rem;
+      margin-right: 0.3rem;
+    }
+    .external-link-btn {
+      font-size: 1rem;
+      padding: 0.6em 1.2em;
+    }
+  }
+</style>

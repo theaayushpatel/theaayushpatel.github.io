@@ -1,0 +1,127 @@
+export const products = [
+  {
+    id: 1,
+    slug: 'minimalist-productivity-planner',
+    name: 'Minimalist Productivity Planner',
+    price: 24.99,
+    shortDescription: 'Streamline your daily tasks with this elegant, distraction-free planner.',
+    description: 'The Minimalist Productivity Planner is designed for those who value simplicity and effectiveness. With a clean layout and thoughtfully designed pages, this planner helps you focus on what matters most.\n\nEach page includes space for daily goals, priorities, scheduling, and reflection. The high-quality paper ensures a premium writing experience, while the durable cover protects your plans throughout the year.',
+    features: [
+      'Undated - start anytime',
+      '120 gsm premium paper',
+      'Hardcover with vegan leather finish',
+      'Daily, weekly and monthly planning sections',
+      'Goal tracking and habit formation pages',
+      'Includes 3 ribbon bookmarks'
+    ],
+    images: [
+      '/assets/products/planner-1.jpg',
+      '/assets/products/planner-2.jpg',
+      '/assets/products/planner-3.jpg'
+    ],
+    stores: [
+      { name: 'Etsy', url: 'https://www.etsy.com/your-store/product-link' },
+      { name: 'Amazon', url: 'https://www.amazon.com/your-product-link' }
+    ]
+  },
+  {
+    id: 2,
+    slug: 'digital-productivity-system',
+    name: 'Digital Productivity System',
+    price: 39.99,
+    shortDescription: 'A complete Notion template system for organizing your entire digital life.',
+    description: 'Transform your productivity with this comprehensive Notion template system. Designed for both beginners and power users, this system helps you manage tasks, projects, notes, and goals in one connected workspace.\n\nThe Digital Productivity System includes customizable dashboards, project management tools, habit trackers, and knowledge management systems - all thoughtfully designed to work together seamlessly.',
+    features: [
+      'Compatible with Notion Free and Paid plans',
+      '15+ pre-built templates and dashboards',
+      'Task management system with priority matrix',
+      'Project tracking with Kanban and timeline views',
+      'Knowledge management system with linked databases',
+      'Habit tracker with visual progress indicators',
+      'Lifetime access to future updates'
+    ],
+    images: [
+      '/assets/products/notion-1.jpg',
+      '/assets/products/notion-2.jpg',
+      '/assets/products/notion-3.jpg'
+    ],
+    stores: [
+      { name: 'Gumroad', url: 'https://gumroad.com/your-product-link' },
+      { name: 'Personal Website', url: 'https://yourwebsite.com/store/product' }
+    ]
+  },
+  {
+    id: 3,
+    slug: 'programming-ebook-bundle',
+    name: 'Programming E-Book Bundle',
+    price: 49.99,
+    shortDescription: 'Master modern web development with this comprehensive guide to JavaScript, React, and Node.js.',
+    description: 'Elevate your coding skills with this in-depth e-book bundle covering the most important technologies in modern web development. Perfect for intermediate developers looking to level up their skills and build professional-grade applications.\n\nThis bundle includes three comprehensive e-books with practical projects, code examples, and best practices drawn from real-world development experience.',
+    features: [
+      '3 DRM-free e-books (PDF, EPUB, and MOBI formats)',
+      '15+ hands-on projects with source code',
+      'Modern JavaScript: ES6+ features and practical patterns',
+      'React mastery: From fundamentals to advanced state management',
+      'Node.js backend development with Express and MongoDB',
+      'Access to private GitHub repository with additional resources',
+      'Regular updates as technologies evolve'
+    ],
+    images: [
+      '/assets/products/ebook-1.jpg',
+      '/assets/products/ebook-2.jpg'
+    ],
+    stores: [
+      { name: 'Gumroad', url: 'https://gumroad.com/your-product-link' },
+      { name: 'Leanpub', url: 'https://leanpub.com/your-book' }
+    ]
+  },
+  {
+    id: 4,
+    slug: 'minimal-desk-organizer',
+    name: 'Minimal Desk Organizer',
+    price: 35.00,
+    shortDescription: 'Keep your workspace tidy with this sleek wooden desk organizer.',
+    description: 'Crafted from sustainable bamboo, this minimal desk organizer combines form and function to help you maintain a clean, productive workspace. The thoughtful design includes compartments for all your essential items while maintaining a clean aesthetic.\n\nThe natural wood grain makes each piece unique, while the modular design allows you to arrange the components to fit your specific needs and desk space.',
+    features: [
+      'Made from sustainable bamboo',
+      'Phone stand with cable management',
+      'Pen and pencil holder',
+      'Small items tray',
+      'Modular design for custom arrangement',
+      'Water-resistant finish',
+      'Dimensions: 10" x 5" x 3"'
+    ],
+    images: [
+      '/assets/profile.png',
+      '/assets/aayushpatel.png',
+      '/assets/products/organizer-3.jpg'
+    ],
+    stores: [
+      { name: 'Etsy', url: 'https://www.etsy.com/your-store/product-link' },
+      { name: 'Amazon', url: 'https://www.amazon.com/your-product-link' }
+    ]
+  }
+];
+
+export const storeLinks = [
+  {
+    name: 'Etsy Shop',
+    url: 'https://www.etsy.com/your-shop',
+    logo: '/assets/logos/etsy-logo.svg'
+  },
+  {
+    name: 'Gumroad',
+    url: 'https://gumroad.com/your-username',
+    logo: '/assets/logos/gumroad-logo.svg'
+  },
+  {
+    name: 'Amazon Storefront',
+    url: 'https://www.amazon.com/your-shop',
+    logo: '/assets/logos/amazon-logo.svg'
+  },
+  {
+    name: 'Personal Website',
+    url: 'https://yourwebsite.com/store',
+    logo: '/assets/logos/website-logo.svg'
+  }
+];

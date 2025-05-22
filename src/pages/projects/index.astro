@@ -1,0 +1,282 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+// Get all project markdown entries
+const projects = await getCollection("projects");
+
+// Get all unique categories
+const allCategories = Array.from(
+  new Set(
+    projects.map(item => item.data.category)
+  )
+).sort();
+
+// Default to showing all items
+const categoryFilters = ["All", ...allCategories];
+---
+
+<MainLayout>
+  <Header />
+  
+  <main>
+    <section class="projects-section">
+      <h1 class="projects-title">Projects.<span class="cursor">_</span></h1>
+      
+      <!-- Category Filter Buttons -->
+      <div class="filter-container">
+        {categoryFilters.map(category => (
+          <button class={`filter-btn ${category === 'All' ? 'active' : ''}`} data-category={category}>
+            {category}
+          </button>
+        ))}
+      </div>
+      
+      <!-- Projects Grid -->
+      <div class="projects-container">
+        <div class="projects-grid">
+          {projects.map(item => (
+            <a href={`/projects/${item.slug}`} class="project-card" data-categories={JSON.stringify([item.data.category])}>
+              <div class="project-image">
+                <img src={item.data.images && item.data.images[0]} alt={item.data.name} loading="lazy" />
+              </div>
+              <div class="project-info">
+                <h2 class="project-title">{item.data.name}</h2>
+                <p class="project-category">{item.data.category}</p>
+                <p class="project-description">{item.data.shortDescription}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set up filter functionality
+      const projectCards = document.querySelectorAll('.project-card');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Update active button
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          const category = button.getAttribute('data-category');
+          
+          // Filter items with animation
+          projectCards.forEach(card => {
+            const itemCategories = JSON.parse(card.getAttribute('data-categories') || '[]');
+            
+            if (category === 'All' || itemCategories.includes(category)) {
+              card.style.display = 'block';
+              setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+              }, 10);
+            } else {
+              card.style.opacity = '0';
+              card.style.transform = 'translateY(20px)';
+              setTimeout(() => {
+                card.style.display = 'none';
+              }, 300); // Match transition duration
+            }
+          });
+        });
+      });
+
+      // Initialize images with fade-in animation
+      const projectImages = document.querySelectorAll('.project-image img');
+      projectImages.forEach(img => {
+        if (img.complete) {
+          img.parentElement.classList.add('loaded');
+        } else {
+          img.addEventListener('load', () => {
+            img.parentElement.classList.add('loaded');
+          });
+        }
+        
+        // Fallback if image fails to load
+        img.addEventListener('error', () => {
+          img.parentElement.classList.add('loaded');
+        });
+      });
+    });
+  </script>
+</MainLayout>
+
+
+<style>
+  main {
+    padding: 2rem 1rem;
+  }
+  
+  .projects-section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .projects-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-style: italic;
+    position: relative;
+  }
+  
+  .cursor {
+    font-weight: 300;
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  /* Filter Buttons */
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  
+  .filter-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-btn:hover {
+    color: #555;
+  }
+  
+  .filter-btn.active {
+    background-color: #000;
+    color: #fff;
+    font-weight: 500;
+  }
+  
+  /* Projects Grid Layout */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .project-image {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 66%; /* Aspect ratio 3:2 */
+    overflow: hidden;
+    background-color: #f0f0f0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  .project-image.loaded {
+    opacity: 1;
+  }
+  
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.5s ease;
+  }
+  
+  .project-card:hover .project-image img {
+    transform: scale(1.05);
+  }
+  
+  .project-info {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #222;
+  }
+  
+  .project-category {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+  }
+  
+  .project-description {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  @media (max-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .project-image {
+      padding-bottom: 60%; /* Slightly shorter on mobile */
+    }
+    
+    .filter-container {
+      margin-bottom: 2rem;
+    }
+    
+    .filter-btn {
+      padding: 0.4rem 1.2rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

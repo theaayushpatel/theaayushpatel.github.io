@@ -1,0 +1,36 @@
+<footer class="site-footer">
+  <div class="footer-content">
+    <span style="margin-left: 1rem;">&copy; {new Date().getFullYear()} Aayush Patel. All rights reserved.</span>
+  </div>
+
+  <style>
+    .site-footer {
+      width: 100%;
+      background: #ffffff;
+      color: #00000;
+      padding: 1.5rem 0;
+      text-align: left;
+      margin-top: 6rem;
+      margin-left: 0;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: left;
+      font-size: 1rem;
+    }
+    .footer-content a {
+      color: #bbb;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      transition: color 0.2s;
+    }
+
+    @media (max-width: 600px) {
+      .footer-content {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</footer>

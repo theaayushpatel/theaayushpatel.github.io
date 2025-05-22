@@ -1,0 +1,243 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { products, storeLinks } from "../../content/products";
+---
+
+<MainLayout>
+  <Header />
+  <section class="hero">
+    <h1 class="shop-title"><i>My Shop.</i><span class="cursor">_</span></h1>
+    
+    <!-- Store Links -->
+    <div class="store-links">
+      <h2>Find My Products On:</h2>
+      <div class="stores-grid">
+        {storeLinks.map(store => (
+          <a href={store.url} target="_blank" rel="noopener noreferrer" class="store-link">
+            <div class="store-card">
+              <img src={store.logo} alt={`${store.name} logo`} />
+              <h3>{store.name}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Featured Products -->
+    <div class="products-section">
+      <h2>Products</h2>
+      <div class="products-grid">
+        {products.map(product => (
+          <a href={`/shop/${product.slug}`} class="product-link">
+            <div class="product-card">
+              <div class="product-image">
+                <img src={product.images[0]} alt={product.name} />
+              </div>
+              <div class="product-info">
+                <h3>{product.name}</h3>
+                <p class="product-price">${product.price.toFixed(2)}</p>
+                <p class="product-description">{product.shortDescription}</p>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <Footer />
+</MainLayout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .shop-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .cursor {
+    font-weight: 300;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  /* Store Links Styles */
+  .store-links {
+    width: 100%;
+    margin: 2rem 0;
+  }
+  
+  .store-links h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+  }
+  
+  .stores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+  }
+  
+  .store-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .store-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+  }
+  
+  .store-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .store-card img {
+    height: 60px;
+    width: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .store-card h3 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  
+  /* Products Grid Styles */
+  .products-section {
+    width: 100%;
+    margin: 3rem 0;
+  }
+  
+  .products-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+  }
+  
+  .product-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .product-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .product-image {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  
+  .product-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+  
+  .product-info {
+    padding: 1.2rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product-info h3 {
+    font-size: 1.3rem;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .product-price {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 0.3rem 0 0.7rem 0;
+    color: #232323;
+  }
+  
+  .product-description {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  
+  @media (max-width: 900px) {
+    .shop-title {
+      font-size: 2.5rem;
+    }
+    
+    .stores-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .shop-title {
+      font-size: 2rem;
+    }
+    
+    .hero {
+      padding: 1rem;
+    }
+    
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
