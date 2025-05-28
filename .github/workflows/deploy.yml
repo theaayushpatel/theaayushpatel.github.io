@@ -22,12 +22,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install, build, and upload your site
         uses: withastro/action@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: my-artifact-${{ github.job }}-${{ matrix.os }}
-          path: ./dist
-          retention-days: 1 # Optional
+
 
         # with:
           # path: . # The root location of your Astro project inside the repository. (optional)
