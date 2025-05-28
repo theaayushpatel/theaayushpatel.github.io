@@ -363,17 +363,6 @@ const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
     white-space: nowrap;
   }
   
-  /* Syntax highlighting colors */
-  .blog-post-content :global(.token.comment) { color: var(--code-comment); }
-  .blog-post-content :global(.token.keyword) { color: var(--code-keyword); }
-  .blog-post-content :global(.token.function) { color: var(--code-function); }
-  .blog-post-content :global(.token.string) { color: var(--code-string); }
-  .blog-post-content :global(.token.number) { color: var(--code-number); }
-  .blog-post-content :global(.token.operator) { color: var(--code-operator); }
-  .blog-post-content :global(.token.punctuation) { color: var(--code-punctuation); }
-  .blog-post-content :global(.token.property) { color: var(--code-property); }
-  .blog-post-content :global(.token.tag) { color: var(--code-tag); }
-  
   .blog-post-content :global(blockquote) {
     border-left: 4px solid #000000;
     padding-left: 1rem;
