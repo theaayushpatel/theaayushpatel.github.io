@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "astro": "^5.7.12",
+    "astro-expressive-code": "^0.41.2",
     "gray-matter": "^4.0.3",
     "typed.js": "^2.1.0"
   }
