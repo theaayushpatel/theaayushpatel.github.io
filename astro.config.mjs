@@ -6,7 +6,7 @@ import expressiveCode from 'astro-expressive-code';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://theaayushpatel.github.io',
-  base: '/',
+  base: '/theaayushpatel.github.io/',
   output: 'static',
   integrations: [expressiveCode()],
 })
