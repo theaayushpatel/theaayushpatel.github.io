@@ -8,4 +8,5 @@ export default defineConfig({
   site: 'https://theaayushpatel.github.io',
   base: '/theaayushpatel.github.io/',
   output: 'static',
+  integrations: [expressiveCode()],
 })
