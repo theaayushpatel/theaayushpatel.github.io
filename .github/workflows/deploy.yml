@@ -25,6 +25,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: my-artifact-${{ github.job }}-${{ matrix.os }}
           path: ./dist
           retention-days: 1 # Optional
 
