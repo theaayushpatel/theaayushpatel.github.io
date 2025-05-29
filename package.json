@@ -10,7 +10,7 @@
     "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
-    "astro": "^5.7.12",
+    "astro": "^5.8.0",
     "astro-expressive-code": "^0.41.2",
     "gray-matter": "^4.0.3",
     "typed.js": "^2.1.0"
