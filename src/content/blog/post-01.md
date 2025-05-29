@@ -18,7 +18,7 @@ The intersection of mathematics and computer science produces some of the most e
 ![alt text](/assets/portfolio/bicycle.jpg)
 
 
-```python
+```python title="my-test-file.py"
 def show_menu():
     print("\n== To-Do List Menu ==")
     print("1. View tasks")
@@ -57,6 +57,12 @@ def main():
 if __name__ == "__main__":
     main()
 
+```
+
+<br>
+
+```shell title="NPM running Astro dev"
+npm run dev
 ```
 
 ## Key Takeaways
